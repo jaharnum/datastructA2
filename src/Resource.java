@@ -46,6 +46,18 @@ public class Resource {
 		return true;
 		
 	}
+
+	public boolean inFromFile(String[] array){
+		//TODO exception handling - index out of bounds should be taken care of by the length checks previous to this, but need parseInt checks
+		this.title = array[1];
+		this.borrower = array[2];
+		int month = Integer.parseInt(array[3]);
+		int day = Integer.parseInt(array[4]);
+		int year = Integer.parseInt(array[5]);
+		this.dueDate = new MyDate(month, day, year);
+
+		return true;
+	}
 	
 	public String toString() {
 		

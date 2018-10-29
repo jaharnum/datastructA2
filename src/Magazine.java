@@ -34,6 +34,29 @@ public class Magazine extends Resource {
 		return true;
 		
 	}
+
+	public boolean inFromFile(String[] array){
+
+		if(super.inFromFile(array)) {
+
+			try {
+
+				int month = Integer.parseInt(array[7]);
+				int day = Integer.parseInt(array[8]);
+				int year = Integer.parseInt(array[9]);
+				edition = new MyDate(month, day, year);
+
+				return true;
+
+			} catch(NumberFormatException e){
+				System.out.println("File formatted incorrectly, unable to read file");
+				return false;
+			}
+
+		} else {
+			return false;
+		}
+	}
 	
 	public String toString() {
 		String s = "Edition: " + edition.toString() + super.toString();

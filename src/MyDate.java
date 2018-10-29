@@ -30,6 +30,12 @@ public class MyDate {
 		day = 1;
 		
 	}
+
+	public MyDate(int month, int day, int year){
+		this.month = month;
+		this.day = day;
+		this.year = year;
+	}
 	
 	public boolean inputDate(Scanner in) { //taken directly from Lab1
 		month = 0;

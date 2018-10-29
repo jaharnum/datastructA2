@@ -88,24 +88,28 @@ public class Assign2 {
 
 			} else if (option==6) {
 
-				System.out.println("Please input the file you would like to read from");
-				String fileName = in.next();
-
-				boolean success = false;
+				boolean stopRead = false;
 
 				do {
-					if(fileName.matches("(.*).txt")) {
+					System.out.println("Please input the file you would like to read from or enter 'stop' to return to menu");
+					String fileName = in.next();
+
+					if (fileName.equalsIgnoreCase("stop")) {
+
+						stopRead = true;
+
+					} else if(fileName.matches("(.*).txt")) {
 
 						try {
-							File file = new File("\\"+fileName);
+							File file = new File("C:\\Users\\Jamie\\Documents\\Algonquin\\F18\\CST8130 Data Struct\\Assign2\\out\\production\\Assign2\\"+fileName);
 							fileInput = new Scanner(file);
 
 							System.out.println("Reading from file...");
 
-							FileHandler handler = new FileHandler();//TODO
-
-							//if not null, print everything including added resources
-							success=true;
+							if(myLib.inFromFile(fileInput)) {
+								//print everything including added resources
+								stopRead = true;
+							}
 						} catch(FileNotFoundException e) {
 							System.out.println("File not found");
 						}
@@ -113,12 +117,12 @@ public class Assign2 {
 					} else {
 						System.out.println(fileName + " is not a valid filename. Please enter a .txt file");
 					}
-				} while(!success);
+				} while(!stopRead);
 
 
 			} else if (option==7) {
 
-				//TODO write to file
+				//TODO write to file methods
 				myLib.fileSave(in);
 
 

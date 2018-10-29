@@ -23,9 +23,9 @@ import java.util.Scanner;
  */
 public class Library {
 	
-	private Resource[] resourcesBorrowed;
+	private Resource[] resourcesBorrowed; //TODO move to arraylist
 	private Resource[] copyResources;
-	private int numResources;
+	private int numResources = 0;
 	private int max;
 	
 	public Library(int max) {
@@ -45,7 +45,6 @@ public class Library {
 			System.out.println("B for book");
 			System.out.println("D for DVD");
 			System.out.println("M for magazine");
-			System.out.println("O for other");
 			
 			String resourceType = in.next();
 			
@@ -98,7 +97,54 @@ public class Library {
 		return false;
 		}
 	}
-	
+
+	public boolean inFromFile(Scanner in){
+		if(in.nextLine()==null){
+			return false; //if there's nothing in the file, what is the point
+		}
+
+		while(in.nextLine()!=null){
+
+			String line = in.nextLine();
+			System.out.println(line);
+
+			String lineArray[] = line.split(" ");
+
+			int length = lineArray.length;
+
+			//TODO why the fuck are there double spaces in this thing ugh deal with that
+
+			if(length<8){ //every resource must have at least 8 data members
+				System.out.println("File incorrectly formatted, cannot read from file");
+				return false;
+			}
+
+			switch(lineArray[0]){ //first item of each line is the character denoting what type of resource it is;
+				case "b":
+					resourcesBorrowed[numResources] = new Book();
+					break;
+				case "d":
+					resourcesBorrowed[numResources] = new DVD();
+					break;
+				case "m":
+					if(length<10){ //magazines have 10 data members when each member of MyDate is counted separately
+						System.out.println("File incorrectly formatted, cannot read from file");
+						return false;
+					}
+					resourcesBorrowed[numResources] = new Magazine();
+			}
+
+			if(resourcesBorrowed[numResources].inFromFile(lineArray)){
+				numResources++;
+			} else {
+				System.out.println("Could not read from file");
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	public String toString() {
 		//how many resources are currently being borrowed out of the max number
 		//loop toString for all resources?
@@ -173,7 +219,7 @@ public class Library {
 	public void fileSave(Scanner in){
 		if(numResources!=0) { //don't need to ask about saving if there are no resources currently in the system
 			String fileName;
-			FileWriter outFile = null;
+			FileWriter outFile;
 			boolean goodName;
 
 			do {

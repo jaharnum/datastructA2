@@ -34,6 +34,15 @@ public class Book extends Resource {
 		}
 		
 	}
+
+	public boolean inFromFile(String[] array){
+		if(super.inFromFile(array)) {
+			this.author = array[7];
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 	public String toString() {
 		String s = "Author: " + this.author + " " + super.toString();

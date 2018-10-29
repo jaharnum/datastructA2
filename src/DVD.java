@@ -33,6 +33,15 @@ public class DVD extends Resource {
 			return false;
 		}
 	}
+
+	public boolean inFromFile(String[] array){
+		if (super.inFromFile(array)){
+			this.type = array[7];
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 	public String toString() {
 		String s = "Type of DVD: " + this.type + super.toString();
