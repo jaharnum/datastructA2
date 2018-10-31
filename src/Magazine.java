@@ -59,7 +59,7 @@ public class Magazine extends Resource {
 	}
 	
 	public String toString() {
-		String s = "Edition: " + edition.toString() + super.toString();
+		String s = "Edition: " + edition.toString() + " " + super.toString();
 		return s; 
 	}
 
@@ -70,6 +70,13 @@ public class Magazine extends Resource {
 		}
 
 		return dueDate;
+	}
+
+	public String saveResource() {
+
+		String save = "m " + super.saveResource() + " " + edition.toString() + "\n";
+
+		return save;
 	}
 
 

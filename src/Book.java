@@ -1,3 +1,5 @@
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
 /**
@@ -56,5 +58,12 @@ public class Book extends Resource {
 		}
 
 		return dueDate;
+	}
+
+	public String saveResource() {
+
+		String save = "b " + super.saveResource() + " " + this.author + "\n";
+
+		return save;
 	}
 }

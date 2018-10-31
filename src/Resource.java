@@ -61,7 +61,7 @@ public class Resource {
 	
 	public String toString() {
 		
-		return "Title: " + this.title + " Borrower: " + this.borrower + " Due: " + dueDate.toString() + "\nOverdue fees are: $" + this.overdueCost; //TODO if there's time - get float to display to 2 decimal places
+		return "Title: " + this.title + " Borrower: " + this.borrower + " Due: " + dueDate.toString() + "\nOverdue fees are: $" + this.overdueCost + "\n"; //TODO if there's time - get float to display to 2 decimal places
 	}
 
 	public boolean isOverDue(MyDate today) {
@@ -86,9 +86,15 @@ public class Resource {
 
 	}
 
-	public void saveResource(FileWriter outFile) {
+	public String saveResource() {
 
 		//TODO save handling
-		//find out how to tell what child of resource it is coming from - might be able to call super AFTER "b" "m" or "d" are added to file
+		//format: b ttt ttt 10 29 2018 2.0 ttt
+		//type title borrower month day year overduefee author/type/date(month day year)
+
+		String save = this.title + " " + this.borrower + " " + this.dueDate.toString() + " " + this.overdueCost;
+
+		return save;
+
 	}
 }

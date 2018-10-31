@@ -79,7 +79,7 @@ public class MyDate {
 	
 	
 	public String toString() {
-		return this.month + "/" + this.day + "/" + this.year;
+		return this.month + " " + this.day + " " + this.year;
 	}
 	
 	public void addOne() {

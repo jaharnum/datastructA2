@@ -24,7 +24,7 @@ public class DVD extends Resource {
 	public boolean inputResource(Scanner in, MyDate today) {
 
 		System.out.println("What type of DVD?");
-		type = in.next(); //TODO check is not null
+		type = in.next();
 
 		
 		if(super.inputResource(in, today)) {
@@ -44,7 +44,7 @@ public class DVD extends Resource {
 	}
 	
 	public String toString() {
-		String s = "Type of DVD: " + this.type + super.toString();
+		String s = "Type of DVD: " + this.type + " " + super.toString();
 		return s;
 	}
 
@@ -55,5 +55,12 @@ public class DVD extends Resource {
 		}
 
 		return dueDate;
+	}
+
+	public String saveResource() {
+
+		String save = "d " + super.saveResource() + " " + type + "\n";
+
+		return save;
 	}
 }

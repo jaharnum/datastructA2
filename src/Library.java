@@ -63,11 +63,6 @@ public class Library {
 				resourcesBorrowed[numResources] = new Magazine();
 				typeSelected = true;
 				
-			} else if (resourceType.equalsIgnoreCase("O")) {
-				//other
-				resourcesBorrowed[numResources] = new Resource();
-				typeSelected = true;
-				
 			} else {
 				System.out.println("Sorry, that's not a valid option");
 				
@@ -76,20 +71,10 @@ public class Library {
 		
 		if (resourcesBorrowed[numResources].inputResource(in, today)) {
 			
-			if(numResources==max-1) {
-				copyResources = new Resource[max*2];
-				
-				for(int i = 0; i < numResources+1; i++) {
-					copyResources[i] = resourcesBorrowed[i];
-				}
-				
-				resourcesBorrowed = copyResources;
-				max = max*2;
+			checkMax();
 			
-			} 
-			
-				System.out.println("New resource added: " + resourcesBorrowed[numResources].toString());
-				numResources++;
+			System.out.println("New resource added: " + resourcesBorrowed[numResources].toString());
+			numResources++;
 			
 			return true;
 		} else {
@@ -99,11 +84,12 @@ public class Library {
 	}
 
 	public boolean inFromFile(Scanner in){
-		if(in.nextLine()==null){
+
+		if(!in.hasNext()){
 			return false; //if there's nothing in the file, what is the point
 		}
 
-		while(in.nextLine()!=null){
+		while(in.hasNext()){
 
 			String line = in.nextLine();
 			System.out.println(line);
@@ -112,9 +98,7 @@ public class Library {
 
 			int length = lineArray.length;
 
-			//TODO why the fuck are there double spaces in this thing ugh deal with that
-
-			if(length<8){ //every resource must have at least 8 data members
+			if(length!=8&&length!=10){ //every resource must have either 8 or 10 data members
 				System.out.println("File incorrectly formatted, cannot read from file");
 				return false;
 			}
@@ -127,15 +111,21 @@ public class Library {
 					resourcesBorrowed[numResources] = new DVD();
 					break;
 				case "m":
-					if(length<10){ //magazines have 10 data members when each member of MyDate is counted separately
+					if(length!=10){ //magazines have 10 data members when each member of MyDate is counted separately
 						System.out.println("File incorrectly formatted, cannot read from file");
 						return false;
+					} else {
+						resourcesBorrowed[numResources] = new Magazine();
 					}
-					resourcesBorrowed[numResources] = new Magazine();
 			}
 
 			if(resourcesBorrowed[numResources].inFromFile(lineArray)){
+
+				checkMax();
+				System.out.println("New resource added: " + resourcesBorrowed[numResources].toString());
 				numResources++;
+
+
 			} else {
 				System.out.println("Could not read from file");
 				return false;
@@ -145,9 +135,25 @@ public class Library {
 		return true;
 	}
 
+	public void checkMax(){
+
+		if(numResources==max-1) {
+			copyResources = new Resource[max*2];
+
+			for(int i = 0; i < numResources+1; i++) {
+				copyResources[i] = resourcesBorrowed[i];
+			}
+
+			resourcesBorrowed = copyResources;
+			max = max*2;
+
+		}
+
+	}
+
 	public String toString() {
-		//how many resources are currently being borrowed out of the max number
-		//loop toString for all resources?
+		//loop toString for all resources
+
 		if(numResources == 0) {
 			return "There are not currently any resources checked out of the library";
 		} else {
@@ -177,6 +183,9 @@ public class Library {
 	}
 
 	public void deleteResource (Scanner in, MyDate today) {
+		//remove a resource and copy to a new array to fill any indexing gaps
+		//TODO check what you can change after you turn to array list
+
 		if (numResources == 0) {
 			System.out.println ("No resources to delete\n");
 			return;
@@ -217,7 +226,11 @@ public class Library {
 	}
 
 	public void fileSave(Scanner in){
-		if(numResources!=0) { //don't need to ask about saving if there are no resources currently in the system
+
+		if(numResources==0){
+			System.out.println("There are no resources to save");
+		} else { //don't need to ask about saving if there are no resources currently in the system
+
 			String fileName;
 			FileWriter outFile;
 			boolean goodName;
@@ -232,23 +245,37 @@ public class Library {
 				} else {
 					goodName = false;
 					System.out.println("Sorry, we can only save to .txt files, please input your filename again.");
-
 				}
 
 			} while(!goodName);
 
 			try {
 
-				outFile = new FileWriter(fileName);
+				outFile = new FileWriter(fileName, true);
+
+				int unsaved = 0;
 
 				for(int i = 0; i<numResources; i++) {
 
-					resourcesBorrowed[i].saveResource(outFile);
+					try {
+
+						String resource = resourcesBorrowed[i].saveResource();
+						outFile.append(resource);
+
+					}catch (IOException e){
+						System.out.println("Resource " + (i+1) + " was unable to be saved");
+						unsaved++; //if any one resource is unable to be saved, an error will be sent at that time and then it will be totaled at the end
+					}
+
 				}
 
 				outFile.close();
 
-				System.out.println("Successfully saved to " + fileName);
+				if(unsaved==0) {
+					System.out.println("Successfully saved " + numResources + " resources to " + fileName);
+				} else {
+					System.out.println(unsaved + " out of " + numResources + " were unable to be saved to " + fileName);
+				}
 
 
 			} catch (IOException e) {
@@ -256,9 +283,7 @@ public class Library {
 
 			}
 
-		} else {
-					System.out.println("There are currently no resources to save");
-				}
+		}
 
 	}
 
