@@ -5,11 +5,13 @@ import java.util.Scanner;
  * @author Jamie Harnum
  * Course: CST8130
  * Lab Section: 313
+ *
  * Data Members: Inherits data members from Resource
  * 				 edition: MyDate - the date the Magazine was published
  * 
  * Methods: 	Magazine() - default constructor, inherits overdue cost from Resource
- * 				inputResource() - extends super.inputResource() and gets user input for the edition
+ * 				inputResource() - extends super.inputResource() and gets user input for the edition, returns true if successfull
+ * 				inFromFile - Uses a String from the Library inFromFile method to create a new Rersource, returns true if successfull
  * 				calcDueDate() - adds 7 days to the date the resource was checked out
  * 				saveResource() - returns a string representation of a Magazine formatted to be able to be read by the program
  * 				toString() - returns string representation of the Magazine's data members formatted for user readability
@@ -17,7 +19,7 @@ import java.util.Scanner;
  */
 public class Magazine extends Resource {
 	
-	protected MyDate edition;
+	private MyDate edition;
 	
 	public Magazine() {
 		
@@ -30,8 +32,7 @@ public class Magazine extends Resource {
 		edition.inputDate(in); 
 		
 		super.inputResource(in, today);
-		
-		//TODO if all values are not null
+
 		return true;
 		
 	}
@@ -69,15 +70,11 @@ public class Magazine extends Resource {
 	}
 
 	public String saveResource() {
-
-		String save = "m " + super.saveResource() + " " + edition.toString() + "\n";
-
-		return save;
+		return "m " + super.saveResource() + " " + edition.toString() + "\n";
 	}
 
 	public String toString() {
-		String s = "Edition: " + edition.toString() + " " + super.toString();
-		return s;
+		return "Edition: " + edition.toString() + " " + super.toString();
 	}
 
 }

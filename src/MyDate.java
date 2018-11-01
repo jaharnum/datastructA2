@@ -5,6 +5,7 @@ import java.util.Scanner;
  * @author Jamie Harnum
  * Course: CST8130
  * Lab Section: 313
+ *
  * Data Members: 	day : int - value between 1 and 31 inclusive (depending on value in month)
                		month: int - value between 1 and 12 inclusive
                		year: int - positive value
@@ -83,7 +84,7 @@ public class MyDate {
 	
 	public void addOne() {
 		//add an extra day & handle change in month/year as needed
-		if (this.day < 31 || (this.month == 2 && this.day < 29) || (this.day < 30 && (this.month == 9 ||this.month == 4 ||this.month == 6 ||this.month == 11) ) ) {
+		if ((this.month == 2 && this.day < 29) || (this.day < 30 && (this.month == 9 ||this.month == 4 ||this.month == 6 ||this.month == 11) ) || this.day < 31 ) {
 			this.day++;
 		} else {
 			if (this.month != 12) {

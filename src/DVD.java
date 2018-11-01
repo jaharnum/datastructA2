@@ -5,18 +5,21 @@ import java.util.Scanner;
  * @author Jamie Harnum
  * Course: CST8130
  * Lab Section: 313
+ *
  * Data Members: Inherits data members from Resource
  * 				type: String - representation of type of DVD. Currently no restrictions set on what types available.
  * 
  * Methods: 	DVD() - default constructor, inherits overdue cost from Resource
  * 				inputResource() - extends Resource inputResource() and gets user input for the DVD type
+ * 				inFromFile - Uses a String from the Library inFromFile method to create a new Rersource, returns true if successfull
+ * 				calcDueDate() - adds 3 days to the date the resource was checked out
  * 				saveResource() - returns a string representation of a DVD formatted to be able to be read by the program
  * 				toString() - returns string representation of the DVD's data members formatted for user readability
  * 
  */
 public class DVD extends Resource {
 
-	protected String type;
+	private String type;
 	
 	public DVD() {
 		
@@ -27,12 +30,7 @@ public class DVD extends Resource {
 		System.out.println("What type of DVD?");
 		type = in.next();
 
-		
-		if(super.inputResource(in, today)) {
-			return true;
-		} else {
-			return false;
-		}
+		return super.inputResource(in, today);
 	}
 
 	public boolean inFromFile(String[] array){
@@ -54,14 +52,10 @@ public class DVD extends Resource {
 	}
 
 	public String saveResource() {
-
-		String save = "d " + super.saveResource() + " " + type + "\n";
-
-		return save;
+		return "d " + super.saveResource() + " " + type + "\n";
 	}
 
 	public String toString() {
-		String s = "Type of DVD: " + this.type + " " + super.toString();
-		return s;
+		return"Type of DVD: " + this.type + " " + super.toString();
 	}
 }

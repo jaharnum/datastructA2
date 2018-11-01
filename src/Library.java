@@ -256,7 +256,7 @@ public class Library {
 		} while (numToDelete==0);
 
 		if (resourcesBorrowed.get(numToDelete-1).isOverDue(today)) {
-			resourcesBorrowed.get(numToDelete-1).displayOverDue();
+			System.out.println(resourcesBorrowed.get(numToDelete-1).displayOverDue());
 		}
 
 		resourcesBorrowed.remove(numToDelete-1);

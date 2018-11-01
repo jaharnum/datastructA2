@@ -5,11 +5,13 @@ import java.util.Scanner;
  * @author Jamie Harnum
  * Course: CST8130
  * Lab Section: 313
+ *
  * Data Members: Inherits data members from Resource
  * 				 author: String - the author of the book.
  *
  * Methods:		Book() - default constructor, sets overdueCost
  * 				inputResource() - extends Resource inputResource() and gets user input for the author
+ * 				inFromFile - Uses a String from the Library inFromFile method to create a new Rersource, returns true if successfull
  * 				calcDueDate() - returns date 14 days after today
  * 				saveResource() - returns a string representation of a DVD formatted to be able to be read by the program
  *				toString() - returns string representation of the Book's data members formatted for user readability
@@ -17,7 +19,7 @@ import java.util.Scanner;
  */
 public class Book extends Resource {
 	
-	protected String author;
+	private String author;
 	
 	public Book() {
 		overdueCost = 2;
@@ -26,14 +28,9 @@ public class Book extends Resource {
 	public boolean inputResource(Scanner in, MyDate today) {
 	
 		System.out.println("Who is the author?");
-		author = in.next(); //TODO check is not null
+		author = in.next();
 		
-		if(super.inputResource(in, today)) {
-		
-		return true;
-		} else {
-			return false;
-		}
+		return super.inputResource(in, today);
 		
 	}
 
@@ -56,14 +53,10 @@ public class Book extends Resource {
 	}
 
 	public String saveResource() {
-
-		String save = "b " + super.saveResource() + " " + this.author + "\n";
-
-		return save;
+		return "b " + super.saveResource() + " " + this.author + "\n";
 	}
 
 	public String toString() {
-		String s = "Author: " + this.author + " " + super.toString();
-		return s;
+		return "Author: " + this.author + " " + super.toString();
 	}
 }

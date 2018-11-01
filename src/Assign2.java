@@ -10,7 +10,8 @@ import java.io.FileNotFoundException;
  * @author Jamie Harnum
  * Course: CST8130
  * Lab Section: 313
- * Known Issues: There is no handling for spaces being input
+ *
+ * Known Issues: There is no handling for bad String input in this program
  */
 public class Assign2 {
 
@@ -128,12 +129,11 @@ public class Assign2 {
 
 			} else if (option==8) {
 
-				//TODO use binary search to find a file by title. ignore case
 				myLib.searchResources(in);
 
 			} else if (option>9 || option<1) {
 				
-				System.out.println("Invalid option, please input a value between 1 and 6");
+				System.out.println("Invalid option, please input a value between 1 and 9");
 				
 			}
 
@@ -141,7 +141,7 @@ public class Assign2 {
 				option = 0; //reset option to 0 so that if user inputs a bad value on the next go around it won't automatically do whatever the last successful option was
 			}
 
-		} while (option!=9); //continue to show menu until user selects 6
+		} while (option!=9); //continue to show menu until user selects 9
 		
 		in.close();
 		System.out.println("Exiting program");

@@ -5,6 +5,7 @@ import java.util.Scanner;
  * @author Jamie Harnum
  * Course: CST8130
  * Lab Section: 313
+ *
  * Data Members: title: String - title of the Resource
  * 				 borrower: String - Name of the person borrowing the Resource
  * 				 dueDate: MyDate - Date the Resource is due
@@ -51,31 +52,32 @@ public class Resource {
 		System.out.println("What is the title?");
 		title = in.next();
 
-		//TODO if time: check for null inputs, figure out how to dump input after spaces
-
 		return true;
 
 	}
 
 	public boolean inFromFile(String[] array) {
-		//TODO exception handling - index out of bounds should be taken care of by the length checks previous to this, but need parseInt checks
+
 		this.title = array[1];
 		this.borrower = array[2];
-		int month = Integer.parseInt(array[3]);
-		int day = Integer.parseInt(array[4]);
-		int year = Integer.parseInt(array[5]);
-		this.dueDate = new MyDate(month, day, year);
 
-		return true;
+		try {
+			int month = Integer.parseInt(array[3]);
+			int day = Integer.parseInt(array[4]);
+			int year = Integer.parseInt(array[5]);
+
+			this.dueDate = new MyDate(month, day, year);
+
+			return true;
+		} catch (NumberFormatException e){
+			System.out.println("File not formatted correctly, unable to read file");
+			return false;
+		}
+
 	}
 
 	public boolean isOverDue(MyDate today) {
-
-		if (today.isGreaterThan(dueDate)) {
-			return true;
-		} else {
-			return false;
-		}
+		return today.isGreaterThan(dueDate);
 	}
 
 	public String displayOverDue() {
@@ -92,11 +94,7 @@ public class Resource {
 	}
 
 	public String saveResource() {
-
-		String save = this.title + " " + this.borrower + " " + this.dueDate.toString() + " " + this.overdueCost;
-
-		return save;
-
+		return this.title + " " + this.borrower + " " + this.dueDate.toString() + " " + this.overdueCost;
 	}
 
 	public int compareResource(Resource newResource) {
@@ -114,7 +112,6 @@ public class Resource {
 	}
 
 	public String toString() {
-
 		return "Title: " + this.title + " Borrower: " + this.borrower + " Due: " + dueDate.toString() + "\nOverdue fees are: $" + this.overdueCost + "\n"; //TODO if there's time - get float to display to 2 decimal places
 	}
 
