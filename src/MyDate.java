@@ -12,8 +12,7 @@ import java.util.Scanner;
  * Methods: 		default constructor - sets date to Jan 1, 2018
          			toString (): String - prints date in year/month/day format
          			inputDate(Scanner): boolean - reads a valid date from the Scanner parameter and returns through boolean if the input was successful or not
-         			addOne(): void - adds one to the day field and then adjusts month and year as needed. 
-         			isEqual(MyDate): checks if the date is equal to a specified date
+         			addOne(): void - adds one to the day field and then adjusts month and year as needed.
          			isGreaterThan(MyDate): checks if the day is greater than a specified date
  * 
  */
@@ -97,15 +96,6 @@ public class MyDate {
 			}
 		}
 		
-	}
-
-	public boolean isEqual(MyDate dueDate) {
-		//compare two dates to see if they are equal
-		if (this.year==dueDate.year && this.month==dueDate.month && this.day==dueDate.day) {
-		return true;
-		} else {
-			return false;
-		}
 	}
 	
 	public boolean isGreaterThan(MyDate dueDate) {

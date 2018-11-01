@@ -1,5 +1,3 @@
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Scanner;
 
 /**
@@ -9,10 +7,12 @@ import java.util.Scanner;
  * Lab Section: 313
  * Data Members: Inherits data members from Resource
  * 				 author: String - the author of the book.
+ *
  * Methods:		Book() - default constructor, sets overdueCost
  * 				inputResource() - extends Resource inputResource() and gets user input for the author
- * 				toString() - returns string representation of the Book's data members
  * 				calcDueDate() - returns date 14 days after today
+ * 				saveResource() - returns a string representation of a DVD formatted to be able to be read by the program
+ *				toString() - returns string representation of the Book's data members formatted for user readability
  * 
  */
 public class Book extends Resource {
@@ -45,11 +45,6 @@ public class Book extends Resource {
 			return false;
 		}
 	}
-	
-	public String toString() {
-		String s = "Author: " + this.author + " " + super.toString();
-		return s;
-	}
 
 	public MyDate calcDueDate(MyDate today) { //adds 14 days to get the dueDate
 
@@ -65,5 +60,10 @@ public class Book extends Resource {
 		String save = "b " + super.saveResource() + " " + this.author + "\n";
 
 		return save;
+	}
+
+	public String toString() {
+		String s = "Author: " + this.author + " " + super.toString();
+		return s;
 	}
 }

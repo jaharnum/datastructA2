@@ -1,6 +1,7 @@
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -10,77 +11,84 @@ import java.util.Scanner;
  * @author Jamie Harnum
  * Course: CST8130
  * Lab Section: 313
- * Data Members: resourcesBorrowed[]: Resource - main array of Resources for the Library
- * 				 copyResources[]: Resource - secondary array to use when deleting items or increasing the size of the array
+ *
+ * Data Members: resourcesBorrowed: ArrayList - main array of Resources for the Library
  * 				 numResources: int - total current number of resources (starting at 0)
- * 				 max: int - The current size of the array
  * 
- * Methods: 	Library(int): default constructor, sets the max size and initializes the resourcesBorrowed array
- * 				inputResource(Scanner, MyDate): select resource type and test for input. This method also handles increasing the size of the array when needed (1 before reaching the max size)
- * 				toString(): a String representation of all items in the resourcesBorrowed array
- * 				resourcesOverdue(MyDate): a list of all resources overdue as of MyDate given
+ * Methods: 	Library(): default constructor, initializes the resourcesBorrowed ArrayList
+ * 				inputResource(Scanner, MyDate): selects resource type and test user input. Returns true if input is valid.
+ * 				inFromFile(Scanner): handles input from file. Returns true if input is valid.
+ * 				findIndex(Resource): uses binary search to find the index where a Resource is or should be, based on title. Returns an integer representing the index.
+ * 				searchResources(Scanner): Finds a resource matching a title input by the user and either prints the found resource or an error message
+ * 				resourcesOverdue(MyDate): Prints a list of all resources overdue as of MyDate given
  * 				deleteResource(Scanner, MyDate): deletes a user selected resource from the array
+ *				toString(): a String representation of all items in the resourcesBorrowed array
  */
 public class Library {
 	
-	private Resource[] resourcesBorrowed; //TODO move to arraylist
-	private Resource[] copyResources;
-	private int numResources = 0;
-	private int max;
+	private ArrayList<Resource> resourcesBorrowed;
+	private int numResources = 0; //size() does the same thing but its more convenient to have a variable rather than use a method every time. Possibly more efficient also?
 	
-	public Library(int max) {
-		
-		this.max = max;
-		resourcesBorrowed = new Resource[max];
-		//initializes array but does *not* allocate memory to the resources, only to the references *to* resources that have yet to be created
+	public Library() {
+
+		resourcesBorrowed = new ArrayList();
+
 	}
 	
 	public boolean inputResource(Scanner in, MyDate today) {
-		
+
 		boolean typeSelected = false;
-		
+
+		Resource newResource = null;
 		do { //type selection and initialization
 			System.out.println("What type of resource would you like to borrow?");
 			System.out.println("Options: ");
 			System.out.println("B for book");
 			System.out.println("D for DVD");
 			System.out.println("M for magazine");
-			
+
 			String resourceType = in.next();
-			
+
 			if (resourceType.equalsIgnoreCase("B")) {
 				//book
-				resourcesBorrowed[numResources] = new Book();
+				newResource = new Book();
 				typeSelected = true;
-				
+
 			} else if (resourceType.equalsIgnoreCase("D")) {
 				//dvd
-				resourcesBorrowed[numResources] = new DVD();
+				newResource = new DVD();
 				typeSelected = true;
-				
+
 			} else if (resourceType.equalsIgnoreCase("M")) {
 				//magazine
-				resourcesBorrowed[numResources] = new Magazine();
+				newResource = new Magazine();
 				typeSelected = true;
-				
+
 			} else {
 				System.out.println("Sorry, that's not a valid option");
-				
+
 			}
 		} while (!typeSelected);
-		
-		if (resourcesBorrowed[numResources].inputResource(in, today)) {
-			
-			checkMax();
-			
-			System.out.println("New resource added: " + resourcesBorrowed[numResources].toString());
+
+
+		if (newResource.inputResource(in, today)) {
+
+			int index = findIndex(newResource);
+
+			if(index<0){
+				index = -index;
+			} //if index is not negative, item with that title already exists in the array - but we'll add it next to that one anyways
+
+			resourcesBorrowed.add(index, newResource);
+
+			System.out.println("New resource added: " + resourcesBorrowed.get(numResources));
 			numResources++;
-			
+
 			return true;
 		} else {
-		
-		return false;
+			return false;
 		}
+
 	}
 
 	public boolean inFromFile(Scanner in){
@@ -103,26 +111,33 @@ public class Library {
 				return false;
 			}
 
+			Resource newResource = null;
+
 			switch(lineArray[0]){ //first item of each line is the character denoting what type of resource it is;
 				case "b":
-					resourcesBorrowed[numResources] = new Book();
+					newResource = new Book();
 					break;
 				case "d":
-					resourcesBorrowed[numResources] = new DVD();
+					newResource = new DVD();
 					break;
 				case "m":
 					if(length!=10){ //magazines have 10 data members when each member of MyDate is counted separately
 						System.out.println("File incorrectly formatted, cannot read from file");
 						return false;
 					} else {
-						resourcesBorrowed[numResources] = new Magazine();
+						newResource = new Magazine();
 					}
 			}
 
-			if(resourcesBorrowed[numResources].inFromFile(lineArray)){
+			if(newResource.inFromFile(lineArray)){
 
-				checkMax();
-				System.out.println("New resource added: " + resourcesBorrowed[numResources].toString());
+				int index = findIndex(newResource);
+				if(index<0){
+					index = -index;
+				} //if index is not negative, item with that title already exists in the array - but we'll add it next to that one anyways
+
+				resourcesBorrowed.add(index, newResource);
+				System.out.println("New resource added: " + resourcesBorrowed.get(numResources));
 				numResources++;
 
 
@@ -135,36 +150,62 @@ public class Library {
 		return true;
 	}
 
-	public void checkMax(){
+	private int findIndex(Resource newResource){
 
-		if(numResources==max-1) {
-			copyResources = new Resource[max*2];
+		int index = -1;
+		int low = 0;
+		int high = resourcesBorrowed.size();
+		int mid;
 
-			for(int i = 0; i < numResources+1; i++) {
-				copyResources[i] = resourcesBorrowed[i];
+		if(numResources>3) {
+
+			while (low <= high) {
+
+				mid = (low + high) / 2;
+				if (resourcesBorrowed.get(mid).compareResource(newResource) < 0)
+					low = mid + 1;
+				else if (resourcesBorrowed.get(mid).compareResource(newResource) > 0)
+					high = mid - 1;
+				else
+					return mid;
 			}
 
-			resourcesBorrowed = copyResources;
-			max = max*2;
-
+		} else {
+			for(int i = 0; i<numResources; i++){
+				if(resourcesBorrowed.get(low).compareResource(newResource)<0){
+					low++;
+				} else if (resourcesBorrowed.get(low).compareResource(newResource)>0){
+					break;
+				}
+			}
 		}
+		return low;
 
 	}
 
-	public String toString() {
-		//loop toString for all resources
+	public void searchResources(Scanner in){
 
-		if(numResources == 0) {
-			return "There are not currently any resources checked out of the library";
-		} else {
-			String s = "Number of resources currently checked out: " + numResources;
-			for(int i = 0; i<numResources; i++) {
-				String temp = "\n[" + (i+1) + "] - " + resourcesBorrowed[i].toString();
-				s = s+temp;
-			}
-			return s;
+		System.out.println("Enter the title you wish to search for:");
+
+		String title = in.next();
+
+		Resource newResource = new Resource(title);
+
+		int index = findIndex(newResource);
+
+		int ifFound = -1;
+
+		if(index>=0 && index<numResources) { //if index is not out of bounds, double check that its the same title as the title at that index
+			ifFound = resourcesBorrowed.get(index).compareResource(newResource);
 		}
-		
+
+		if(ifFound!=0){ //compareResource() will return 0 if they are a complete match
+			System.out.println("Sorry, we couldn't find a resource with that title");
+		} else {
+			System.out.println("Found resource: \n");
+			System.out.println("[" + (index+1) + "] - " + resourcesBorrowed.get(index).toString());
+		}
+
 	}
 	
 	public String resourcesOverdue(MyDate today) {
@@ -172,9 +213,9 @@ public class Library {
 		int numOverdue = 0;
 		
 		for(int i = 0; i<numResources; i++) {
-			if(resourcesBorrowed[i].isOverDue(today)) {
+			if(resourcesBorrowed.get(i).isOverDue(today)) {
 				System.out.println("[" + i + "] is overdue.");
-				System.out.println("Overdue item info: " + resourcesBorrowed[i].toString());
+				System.out.println("Overdue item info: " + resourcesBorrowed.get(i).toString());
 				numOverdue++;
 			}
 			
@@ -183,8 +224,7 @@ public class Library {
 	}
 
 	public void deleteResource (Scanner in, MyDate today) {
-		//remove a resource and copy to a new array to fill any indexing gaps
-		//TODO check what you can change after you turn to array list
+
 
 		if (numResources == 0) {
 			System.out.println ("No resources to delete\n");
@@ -193,35 +233,33 @@ public class Library {
 
 		System.out.println ("List of resources checked out in the library: ");
 		for (int i=0; i < numResources; i++) {
-			System.out.print("[" + (i+1) + "]: " + resourcesBorrowed[i].toString());
+			System.out.print("[" + (i+1) + "]: " + resourcesBorrowed.get(i).toString());
 		}
 
 
-		System.out.println ("Which resource to delete: ");
 		int numToDelete = 0;
-		boolean reEnter = true;
+
 		do {
+			System.out.println ("Enter number of resource to delete: ");
 			if (in.hasNextInt()) {
 				numToDelete = in.nextInt();
 				if (numToDelete < 0 || numToDelete > numResources) {
-					System.out.println ("Invalid ...  please reenter number between 0 and " + numResources);
+					System.out.println ("Invalid ...  please reenter number between 1 and " + numResources);
+					numToDelete = 0;
 				}
-				else reEnter = false;
 			}
 			else {
-				System.out.println ("Invalid...please reenter valid integer");
-				in.next();
+				System.out.println ("Invalid, please enter a valid resource number");
+				in.next(); //dump invalid input
 			}
 
-		} while (reEnter);
+		} while (numToDelete==0);
 
-		if (resourcesBorrowed[numToDelete-1].isOverDue(today)) {
-			resourcesBorrowed[numToDelete-1].displayOverDue();
+		if (resourcesBorrowed.get(numToDelete-1).isOverDue(today)) {
+			resourcesBorrowed.get(numToDelete-1).displayOverDue();
 		}
 
-		for (int i=numToDelete; i < numResources; i++) {
-			resourcesBorrowed[i-1]= resourcesBorrowed[i];
-		}
+		resourcesBorrowed.remove(numToDelete-1);
 		numResources --;
 	}
 
@@ -244,7 +282,7 @@ public class Library {
 					goodName = true;
 				} else {
 					goodName = false;
-					System.out.println("Sorry, we can only save to .txt files, please input your filename again.");
+					System.out.println(fileName + " is not a valid filename. Please enter a .txt file");
 				}
 
 			} while(!goodName);
@@ -259,7 +297,7 @@ public class Library {
 
 					try {
 
-						String resource = resourcesBorrowed[i].saveResource();
+						String resource = resourcesBorrowed.get(i).saveResource();
 						outFile.append(resource);
 
 					}catch (IOException e){
@@ -286,5 +324,22 @@ public class Library {
 		}
 
 	}
+
+	public String toString() {
+		//loop toString for all resources
+
+		if(numResources == 0) {
+			return "There are not currently any resources checked out of the library";
+		} else {
+			String s = "Number of resources currently checked out: " + numResources;
+			for(int i = 0; i<numResources; i++) {
+				String temp = "\n[" + (i+1) + "] - " + resourcesBorrowed.get(i);
+				s = s+temp;
+			}
+			return s;
+		}
+
+	}
+
 
 }

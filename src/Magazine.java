@@ -10,8 +10,9 @@ import java.util.Scanner;
  * 
  * Methods: 	Magazine() - default constructor, inherits overdue cost from Resource
  * 				inputResource() - extends super.inputResource() and gets user input for the edition
- * 				toString() - returns string representation of the Magazine's data members
  * 				calcDueDate() - adds 7 days to the date the resource was checked out
+ * 				saveResource() - returns a string representation of a Magazine formatted to be able to be read by the program
+ * 				toString() - returns string representation of the Magazine's data members formatted for user readability
  * 
  */
 public class Magazine extends Resource {
@@ -57,11 +58,6 @@ public class Magazine extends Resource {
 			return false;
 		}
 	}
-	
-	public String toString() {
-		String s = "Edition: " + edition.toString() + " " + super.toString();
-		return s; 
-	}
 
 	public MyDate calcDueDate(MyDate today) { //adds 7 days to get the dueDate
 
@@ -79,5 +75,9 @@ public class Magazine extends Resource {
 		return save;
 	}
 
+	public String toString() {
+		String s = "Edition: " + edition.toString() + " " + super.toString();
+		return s;
+	}
 
 }

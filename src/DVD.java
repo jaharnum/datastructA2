@@ -10,7 +10,8 @@ import java.util.Scanner;
  * 
  * Methods: 	DVD() - default constructor, inherits overdue cost from Resource
  * 				inputResource() - extends Resource inputResource() and gets user input for the DVD type
- * 				toString() - returns string representation of the DVD's data members
+ * 				saveResource() - returns a string representation of a DVD formatted to be able to be read by the program
+ * 				toString() - returns string representation of the DVD's data members formatted for user readability
  * 
  */
 public class DVD extends Resource {
@@ -42,11 +43,6 @@ public class DVD extends Resource {
 			return false;
 		}
 	}
-	
-	public String toString() {
-		String s = "Type of DVD: " + this.type + " " + super.toString();
-		return s;
-	}
 
 	public MyDate calcDueDate(MyDate today) { //adds 3 days to get the dueDate
 
@@ -62,5 +58,10 @@ public class DVD extends Resource {
 		String save = "d " + super.saveResource() + " " + type + "\n";
 
 		return save;
+	}
+
+	public String toString() {
+		String s = "Type of DVD: " + this.type + " " + super.toString();
+		return s;
 	}
 }

@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 /**
  * Purpose:  This class is the method main for Assignment 2
  * It contains the main menu options for the user.
+ * This assignment further develops the first one by adding input and output to files, changing from Array to ArrayList for the resourcesBorrowed, and incorporating insertionSort and binary search.
  * @author Jamie Harnum
  * Course: CST8130
  * Lab Section: 313
@@ -19,12 +20,12 @@ public class Assign2 {
 		
 		int option = 0;
 		
-		Library myLib = new Library(3); //initialize library right away with a provided max
+		Library myLib = new Library();
 		
 		Scanner in = new Scanner(System.in);
-		Scanner fileInput = null; //for input from file
+		Scanner fileInput; //for input from file
 		
-		do { //menu until 6 is selected
+		do { //menu until 9 is selected
 			
 			System.out.println("Library Checkout System Menu");
 			System.out.println("---------------------------------");
@@ -101,7 +102,7 @@ public class Assign2 {
 					} else if(fileName.matches("(.*).txt")) {
 
 						try {
-							File file = new File("C:\\Users\\Jamie\\Documents\\Algonquin\\F18\\CST8130 Data Struct\\Assign2\\out\\production\\Assign2\\"+fileName);
+							File file = new File(fileName);
 							fileInput = new Scanner(file);
 
 							System.out.println("Reading from file...");
@@ -122,17 +123,13 @@ public class Assign2 {
 
 			} else if (option==7) {
 
-				//TODO write to file methods
 				myLib.fileSave(in);
 
 
 			} else if (option==8) {
 
 				//TODO use binary search to find a file by title. ignore case
-				//items are already sorted by title as they are added
-				//start in the middle - if letter is later in the alphabet than the search title, check in the middle of the first half.
-				//if letter is earlier in the alphabet than search title, check in middle of second half
-				//continue until result is found
+				myLib.searchResources(in);
 
 			} else if (option>9 || option<1) {
 				
